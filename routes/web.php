@@ -43,3 +43,31 @@ Route::get('/admin', [AdminController::class, 'index'])->middleware('auth')->nam
 
 // Authentication routes
 Auth::routes(); // This includes login, registration, password reset, etc.
+
+
+
+// Dashboard route
+Route::get('/dashboard', function () {
+    return view('dashboard'); // Make sure you have a dashboard view file
+})->middleware('auth')->name('dashboard');
+
+
+// User Profile routes
+Route::prefix('profile')->name('profile.')->middleware('auth')->group(function () {
+    Route::get('/', [ProfileController::class, 'index'])->name('index');
+    Route::get('/edit', [ProfileController::class, 'edit'])->name('edit');
+    Route::put('/update', [ProfileController::class, 'update'])->name('update');
+});
+
+
+use App\Http\Controllers\HomeController;
+
+// Home route
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
